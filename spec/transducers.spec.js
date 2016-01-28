@@ -42,6 +42,16 @@ function filtering (predicate) {
   }
 }
 
+function compose () {
+  const fns = arguments
+  return (result) => {
+    for (var i = fns.length - 1; i > -1; i--) {
+      result = fns[i].call(this, result)
+    }
+    return result
+  }
+}
+
 describe('A simple use of map, filter and reduce', () => {
   it('range generate a array', () => {
     expect([0, 1, 2]).toEqual(range(3))
@@ -127,13 +137,28 @@ describe('mapReduce and filterReduce can be more abstracted', () => {
   })
 
   describe('mapping and filtering are reducers', () => {
-    it('mapping is a trasducer', () => {
+    it('mapping is a reducer', () => {
       expect([2]).toEqual(mapping(inc)(concat)([], 1))
       expect([9, 3]).toEqual(mapping(inc)(concat)([9], 2))
     })
-    it('filtering is a trasducer', () => {
+    it('filtering is a reducer', () => {
       expect([2, 3]).toEqual(filtering(isEven)(concat)([2, 3], 5))
       expect([2, 3, 6]).toEqual(filtering(isEven)(concat)([2, 3], 6))
+    })
+
+    it('mapping and filtering can be composed', () => {
+      expect([9]).toEqual(mapping(inc)(filtering(isEven)(concat))([9], 2))
+      expect([9, 4]).toEqual(mapping(inc)(filtering(isEven)(concat))([9], 3))
+    })
+
+    it('composed with compose function', () => {
+      const myLogic = compose(
+        filtering(isEven)
+        , filtering((input) => input < 10)
+        , mapping((x) => x * x)
+        , mapping(inc)
+      )
+      expect([1, 5, 17, 37, 65]).toEqual(range(10).reduce(myLogic(concat), []))
     })
   })
 })
