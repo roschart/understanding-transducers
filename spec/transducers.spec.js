@@ -80,4 +80,9 @@ describe('mapReduce and filterReduce can be composed', () => {
       .reduce(mapReduce(inc), [])
       .reduce(filterReduce(isEven), []))
   })
+  it('inc and even', () => {
+    expect([2, 4, 6]).toEqual(range(6)
+      .map(inc)
+      .filter(isEven))
+  })
 })
