@@ -125,4 +125,11 @@ describe('mapReduce and filterReduce can be more abstracted', () => {
       .reduce(mapping(inc)(concat), [])
       .reduce(filtering(isEven)(concat), []))
   })
+
+  describe('mapping and filtering are reducers', () => {
+    it('mapping is a trasducer', () => {
+      expect([2]).toEqual(mapping(inc)(concat)([], 1))
+      expect([9, 3]).toEqual(mapping(inc)(concat)([9], 2))
+    })
+  })
 })
