@@ -6,9 +6,9 @@ function inc (x) { return x + 1 }
 
 function isEven (x) { return x % 2 === 0 }
 
-function mapReduce (f) {
+function mapReduce (transformation) {
   return (result, input) => {
-    return result.concat([f(input)])
+    return result.concat([transformation(input)])
   }
 }
 
@@ -17,6 +17,28 @@ function filterReduce (predicate) {
     return predicate(input)
       ? result.concat([input])
       : result
+  }
+}
+
+function concat (result, input) {
+  return result.concat([input])
+}
+
+function mapping (transformation) {
+  return (reducer) => {
+    return (result, input) => {
+      return reducer(result, transformation(input))
+    }
+  }
+}
+
+function filtering (predicate) {
+  return (reducer) => {
+    return (result, input) => {
+      return predicate(input)
+        ? reducer(result, input)
+        : result
+    }
   }
 }
 
@@ -84,5 +106,23 @@ describe('mapReduce and filterReduce can be composed', () => {
     expect([2, 4, 6]).toEqual(range(6)
       .map(inc)
       .filter(isEven))
+  })
+})
+
+describe('mapReduce and filterReduce can be more abstracted', () => {
+  it('mapping inc', () => {
+    expect([1, 2, 3]).toEqual(range(3)
+      .reduce(mapping(inc)(concat), []))
+  })
+
+  it('filtering even', () => {
+    expect([0, 2, 4]).toEqual(range(6)
+      .reduce(filtering(isEven)(concat), []))
+  })
+
+  it('compositon of mapping and filtering', () => {
+    expect([2, 4, 6]).toEqual(range(6)
+      .reduce(mapping(inc)(concat), [])
+      .reduce(filtering(isEven)(concat), []))
   })
 })
