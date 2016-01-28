@@ -162,3 +162,28 @@ describe('mapReduce and filterReduce can be more abstracted', () => {
     })
   })
 })
+
+describe('Magic of transducers', () => {
+  describe('A simple mapping', () => {
+    it('With a normal concat', () => {
+      expect([2]).toEqual(mapping(inc)(concat)([], 1))
+    })
+    it('The same logic with simple input', () => {
+      expect(6).toEqual(mapping(inc)((_, i) => i)(null, 5))
+    })
+  })
+  describe('A complex business logic', () => {
+    const myLogic = compose(
+      filtering(isEven)
+      , filtering((input) => input < 10)
+      , mapping((x) => x * x)
+      , mapping(inc)
+    )
+    it('With a normal concat', () => {
+      expect([5]).toEqual(myLogic(concat)([], 2))
+    })
+    it('The same business logic with simple input', () => {
+      expect(5).toEqual(myLogic((_, i) => i)(null, 2))
+    })
+  })
+})
