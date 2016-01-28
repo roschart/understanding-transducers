@@ -1,56 +1,13 @@
-function range (n) {
-  return Array.apply(null, Array(n)).map((_, i) => i)
-}
-
-function inc (x) { return x + 1 }
-
-function isEven (x) { return x % 2 === 0 }
-
-function mapReduce (transformation) {
-  return (result, input) => {
-    return result.concat([transformation(input)])
-  }
-}
-
-function filterReduce (predicate) {
-  return (result, input) => {
-    return predicate(input)
-      ? result.concat([input])
-      : result
-  }
-}
-
-function concat (result, input) {
-  return result.concat([input])
-}
-
-function mapping (transformation) {
-  return (reducer) => {
-    return (result, input) => {
-      return reducer(result, transformation(input))
-    }
-  }
-}
-
-function filtering (predicate) {
-  return (reducer) => {
-    return (result, input) => {
-      return predicate(input)
-        ? reducer(result, input)
-        : result
-    }
-  }
-}
-
-function compose () {
-  const fns = arguments
-  return (result) => {
-    for (var i = fns.length - 1; i > -1; i--) {
-      result = fns[i].call(this, result)
-    }
-    return result
-  }
-}
+var t = require('../main.js')
+const range = t.range
+const inc = t. inc
+const isEven = t. isEven
+const mapReduce = t. mapReduce
+const filterReduce = t. filterReduce
+const concat = t. concat
+const mapping = t. mapping
+const filtering = t. filtering
+const compose = t. compose
 
 describe('A simple use of map, filter and reduce', () => {
   it('range generate a array', () => {
@@ -185,5 +142,22 @@ describe('Magic of transducers', () => {
     it('The same business logic with simple input', () => {
       expect(5).toEqual(myLogic((_, i) => i)(null, 2))
     })
+    it('Business logic with reduce', () => {
+      expect([5, 17]).toEqual([2, 4].reduce(myLogic(concat), []))
+    })
+    it('Business logic with two reduce', () => {
+      expect(22).toEqual([2, 4]
+        .reduce(myLogic(concat), [])
+        .reduce((x, y) => x + y)
+      )
+    })
+    // it('Business logic with  reducer inline', () => {
+    //   expect(-1).toEqual([2].reduce(myLogic((result, item) => {
+    //     console.log("#########")
+    //     console.log('result',result)
+    //     console.log('item',item)
+    //     return result + item
+    //   }, 0)))
+    // })
   })
 })
