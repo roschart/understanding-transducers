@@ -7,8 +7,16 @@ function inc (x) { return x + 1 }
 function isEven (x) { return x % 2 === 0 }
 
 function mapReduce (f) {
-  return (list, x) => {
-    return list.concat([f(x)])
+  return (result, input) => {
+    return result.concat([f(input)])
+  }
+}
+
+function filterReduce (predicate) {
+  return (result, input) => {
+    return predicate(input)
+      ? result.concat([input])
+      : result
   }
 }
 
@@ -26,9 +34,9 @@ describe('A simple use of map, filter and reduce', () => {
   })
 
   it('map inc can be defined using reduce', () => {
-    function mapIncReducer (list, x) {
-      list.push(inc(x))
-      return list
+    function mapIncReducer (result, input) {
+      result.push(inc(input))
+      return result
     }
     expect([1, 2, 3]).toEqual(range(3).reduce(mapIncReducer, []))
   })
@@ -40,18 +48,28 @@ describe('A general mapReduce abstraction can be used', () => {
   })
 
   it('mapReduce with anonimouos fucntions ', () => {
-    expect([0, 1, 4]).toEqual(range(3).reduce(mapReduce((x) => x * x), []))
+    expect([0, 1, 4]).toEqual(range(3).reduce(mapReduce((input) => input * input), []))
   })
 })
 
 describe('Filter can be implemented like reduce', () => {
-  function filterIsEvenReducer (list, x) {
-    if (x % 2 === 0) {
-      return list.concat([x])
+  function filterIsEvenReducer (result, input) {
+    if (input % 2 === 0) {
+      return result.concat([input])
     }
-    return list
+    return result
   }
   it('Filter Even whit reduce', () => {
     expect([0, 2, 4]).toEqual(range(6).reduce(filterIsEvenReducer, []))
+  })
+})
+
+describe('A general filterReduce abstraction can be used', () => {
+  it('filterReduce with even', () => {
+    expect([0, 2, 4]).toEqual(range(5).reduce(filterReduce(isEven), []))
+  })
+
+  it('filterReduce with anonimouos fucntions ', () => {
+    expect([3, 4]).toEqual(range(5).reduce(filterReduce((input) => input > 2), []))
   })
 })

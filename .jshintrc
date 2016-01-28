@@ -8,6 +8,7 @@
     "eqeqeq": true,
     "immed": true,
     "latedef": true,
+    "laxbreak": true,
     "module": true,
     "newcap": false,
     "noarg": true,
