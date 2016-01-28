@@ -73,3 +73,11 @@ describe('A general filterReduce abstraction can be used', () => {
     expect([3, 4]).toEqual(range(5).reduce(filterReduce((input) => input > 2), []))
   })
 })
+
+describe('mapReduce and filterReduce can be composed', () => {
+  it('mapReduce inc and filterReduce even', () => {
+    expect([2, 4, 6]).toEqual(range(6)
+      .reduce(mapReduce(inc), [])
+      .reduce(filterReduce(isEven), []))
+  })
+})
