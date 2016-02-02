@@ -139,6 +139,9 @@ describe('Magic of transducers', () => {
     it('With a normal concat', () => {
       expect([5]).toEqual(myLogic(concat)([], 2))
     })
+    it('With a normal concat and a filter case', () => {
+      expect([]).toEqual(myLogic(concat)([], 3))
+    })
     it('The same business logic with simple input', () => {
       expect(5).toEqual(myLogic((_, i) => i)(null, 2))
     })
