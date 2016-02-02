@@ -27,6 +27,7 @@ function concat (result, input) {
 function mapping (transformation) {
   return (reducer) => {
     return (result, input) => {
+      // console.log('Inside maping', result, input)
       return reducer(result, transformation(input))
     }
   }
@@ -35,6 +36,7 @@ function mapping (transformation) {
 function filtering (predicate) {
   return (reducer) => {
     return (result, input) => {
+      // console.log('run filtering', result, input)
       return predicate(input)
         ? reducer(result, input)
         : result
@@ -46,6 +48,7 @@ function compose () {
   const fns = arguments
   return (result) => {
     for (var i = fns.length - 1; i > -1; i--) {
+      // console.log('Inside compose,  result', result)
       result = fns[i].call(this, result)
     }
     return result
@@ -58,7 +61,7 @@ const myLogic = compose(
   , mapping((x) => x * x)
   , mapping(inc)
 )
-console.log([2, 3, 4].reduce(myLogic((x, y) => { x + y }), 0))
+console.log([2, 3, 4].reduce(myLogic((x, y) => { return x + y }), 0))
 
 module.exports = {
   range: range,

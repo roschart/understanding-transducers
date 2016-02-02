@@ -1,13 +1,13 @@
 var t = require('../main.js')
 const range = t.range
-const inc = t. inc
-const isEven = t. isEven
-const mapReduce = t. mapReduce
-const filterReduce = t. filterReduce
-const concat = t. concat
-const mapping = t. mapping
-const filtering = t. filtering
-const compose = t. compose
+const inc = t.inc
+const isEven = t.isEven
+const mapReduce = t.mapReduce
+const filterReduce = t.filterReduce
+const concat = t.concat
+const mapping = t.mapping
+const filtering = t.filtering
+const compose = t.compose
 
 describe('A simple use of map, filter and reduce', () => {
   it('range generate a array', () => {
@@ -142,6 +142,9 @@ describe('Magic of transducers', () => {
     it('The same business logic with simple input', () => {
       expect(5).toEqual(myLogic((_, i) => i)(null, 2))
     })
+    it('The same business logic with a object', () => {
+      expect({result: 5}).toEqual(myLogic((_, i) => { return {result: i} })(null, 2))
+    })
     it('Business logic with reduce', () => {
       expect([5, 17]).toEqual([2, 4].reduce(myLogic(concat), []))
     })
@@ -151,13 +154,10 @@ describe('Magic of transducers', () => {
         .reduce((x, y) => x + y)
       )
     })
-    // it('Business logic with  reducer inline', () => {
-    //   expect(-1).toEqual([2].reduce(myLogic((result, item) => {
-    //     console.log("#########")
-    //     console.log('result',result)
-    //     console.log('item',item)
-    //     return result + item
-    //   }, 0)))
-    // })
+    it('Business logic with  reducer inline', () => {
+      expect(22).toEqual([2, 3, 4].reduce(myLogic((x, y) => {
+        return x + y
+      }), 0))
+    })
   })
 })
